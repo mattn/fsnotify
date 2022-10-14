@@ -84,3 +84,32 @@ func (e Event) Has(op Op) bool { return e.Op.Has(op) }
 func (e Event) String() string {
 	return fmt.Sprintf("%-13s %q", e.Op.String(), e.Name)
 }
+
+type (
+	addOpt   func(opt *withOpts)
+	withOpts struct {
+		bufsize int
+	}
+)
+
+var defaultOpts = withOpts{
+	bufsize: 65536, // 64K
+}
+
+func getOptions(opts ...addOpt) withOpts {
+	with := defaultOpts
+	for _, o := range opts {
+		o(&with)
+	}
+	return with
+}
+
+// WithBufferSize sets the buffer size for the Windows backend. This is a no-op
+// for other backends.
+//
+// The default value is 64K (65536 bytes) which should be enough for most
+// applications, but you can increase it if you're hitting "queue or buffer
+// overflow" errors ([ErrEventOverflow]).
+func WithBufferSize(bytes int) addOpt {
+	return func(opt *withOpts) { opt.bufsize = bytes }
+}

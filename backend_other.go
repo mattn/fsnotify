@@ -39,6 +39,8 @@ func (w *Watcher) WatchList() []string { return nil }
 //
 // Returns [ErrClosed] if [Watcher.Close] was called.
 //
+// See [AddWith] for a version that allows adding options.
+//
 // # Watching directories
 //
 // All files in a directory are monitored, including new files that are created
@@ -57,6 +59,17 @@ func (w *Watcher) WatchList() []string { return nil }
 // Instead, watch the parent directory and use Event.Name to filter out files
 // you're not interested in. There is an example of this in [cmd/fsnotify/file.go].
 func (w *Watcher) Add(name string) error { return nil }
+
+// AddWith is like [Add], but has the possibility to add options. When using
+// Add() the defaults described below are used.
+//
+// Possible options are:
+//
+//   - [WithBufferSize] sets the buffer size for the Windows backend; no-op on
+//     other platforms. The default is 64K (65536 bytes).
+func (w *Watcher) AddWith(name string, opts ...addOpt) error {
+	return nil
+}
 
 // Remove stops monitoring the path for changes.
 //
